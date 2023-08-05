@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-struct CubePos
+public struct CubePosition
 {
     public int x, y, z;
 
-    public CubePos(int x, int y, int z)
+    public CubePosition(int x, int y, int z)
     {
         this.x = x;
         this.y = y;

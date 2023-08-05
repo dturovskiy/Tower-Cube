@@ -18,9 +18,7 @@ public class ExplodeCubes : MonoBehaviour
 
             restartButton.SetActive(true);
             
-            Camera.main.gameObject.AddComponent<CameraShake>();
-            //Camera.main.transform.position = new Vector3(-5, 0, -5);
-            
+            Camera.main.gameObject.AddComponent<CameraShake>();            
 
             Destroy(collision.gameObject);
             _collisionSet = true;

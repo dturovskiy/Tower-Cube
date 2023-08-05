@@ -6,16 +6,16 @@ public class IsEnabled : MonoBehaviour
 {
     public int needToUnlock;
     public Material blackMaterial;
-    
-    public GameObject[] cubes;
+
     public static int cubeIndex;
-    public Transform activePanels;
 
     public void Start()
     {
         PlayerPrefs.SetInt("needToUnlock", needToUnlock);
-
-
+        if (needToUnlock == 0)
+        {
+            PlayerPrefs.SetString("Cube", "open");
+        }
         if (PlayerPrefs.GetInt("coins") < needToUnlock)
         {
             GetComponent<MeshRenderer>().material = blackMaterial;
