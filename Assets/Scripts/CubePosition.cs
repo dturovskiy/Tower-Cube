@@ -11,12 +11,12 @@ public struct CubePosition
         this.z = z;
     }
 
-    public Vector3 getVector()
+    public readonly Vector3 GetVector()
     {
         return new Vector3(x, y, z);
     }
 
-    public void setVector(Vector3 pos)
+    public void SetVector(Vector3 pos)
     {
         x = (int)pos.x;
         y = (int)pos.y;

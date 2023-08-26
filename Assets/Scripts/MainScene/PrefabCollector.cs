@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class PrefabCollector : MonoBehaviour
+public class PrefabCollector : MonoBehaviour 
 {
     public List<GameObject> cubesToCreate = new List<GameObject>();
 
@@ -18,12 +18,12 @@ public class PrefabCollector : MonoBehaviour
 
         if (cubesToCreate.Count > 0)
         {
-            Debug.Log("Знайдено префаби:");
+            //Debug.Log("Знайдено префаби:");
             cubesToCreate.ForEach(prefab => Debug.Log("- " + prefab.name));
         }
-        else
-        {
-            Debug.LogWarning("Префаби не знайдено. Перевірте шлях до папки з префабами.");
-        }
+        //else
+        //{
+        //    //Debug.LogWarning("Префаби не знайдено. Перевірте шлях до папки з префабами.");
+        //}
     }
 }

@@ -6,6 +6,8 @@ public class UIManager : MonoBehaviour
     public Text bestScoreText; // Текстове поле для відображення найкращого результату
     public Text scoreText; // Текстове поле для відображення поточного результату
 
+    public GameObject restartButton;
+
     // Оновлення найкращого результату
     public void UpdateBestScore(int bestScore)
     {
@@ -19,5 +21,10 @@ public class UIManager : MonoBehaviour
         {
             Destroy(objUI);
         }
+    }
+
+    public void ShowRestartButton()
+    {
+        restartButton.SetActive(true);
     }
 }

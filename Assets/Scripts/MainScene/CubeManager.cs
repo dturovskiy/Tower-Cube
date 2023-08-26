@@ -4,117 +4,66 @@ using UnityEngine;
 
 public class CubeManager : MonoBehaviour
 {
-    public GameObject cubeToPlacePrefab;
-    public Transform allCubes;
-    public Transform cubeToPlace;
+    public Transform allCubesOnScene;    // Контейнер для всіх кубів на сцені
+    public Transform cubeIndicator;    // Вказівник на позицію, де буде розміщений куб
+    public CubePosition currentCubePosition = new CubePosition(0, 1, 0);    // Поточна позиція куба
 
-    public CubePosition currentCube = new CubePosition(0, 1, 0);
-    private bool isLose;
-    public List<GameObject> cubesToCreate;
-    public float cubeChangePlaceSpeed = 0.5f;
-    public Rigidbody allCubesRigidbody;
+    private const float CHANGE_PLACE_SPEED = 0.5f;    // Швидкість зміни місця розміщення
 
+    public CubeHandler cubeHandler;
 
-    public List<Vector3> allCubesPositions = new List<Vector3>
-    {
-        new Vector3(0, 0, 0),
-        new Vector3(1, 0, 0),
-        new Vector3(-1, 0, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 0, 1),
-        new Vector3(0, 0, -1),
-        new Vector3(1, 0, 1),
-        new Vector3(-1, 0, -1),
-        new Vector3(-1, 0, 1),
-        new Vector3(1, 0, -1),
-    };
-
-    private void Awake()
-    {
-        allCubesRigidbody = allCubes.GetComponent<Rigidbody>();
-
-    }
-
-    public void InitializeCubeManager(List<GameObject> cubes)
-    {
-        cubesToCreate = cubes;
-    }
-
-    public void CreateNewCube()
-    {
-        if (cubeToPlace != null && cubesToCreate != null && cubesToCreate.Count > 0)
-        {
-            GameObject newCube = Instantiate(cubesToCreate[IsEnabled.cubeIndex], cubeToPlace.position, Quaternion.identity);
-            newCube.transform.SetParent(allCubes);
-            currentCube.setVector(cubeToPlace.position);
-            allCubesPositions.Add(currentCube.getVector());
-
-            allCubesRigidbody.isKinematic = true;
-            allCubesRigidbody.isKinematic = false;
-            SpawnPosition();
-        }
-    }
-
+    // Видалення куба, який буде розміщено
     public void DestroyCubeToPlace()
     {
-        if (cubeToPlace != null)
+        if (cubeIndicator != null)
         {
-            Destroy(cubeToPlace.gameObject);
+            cubeIndicator.gameObject.SetActive(false);
         }
     }
 
+    // Показ позицій для розміщення куба
     public IEnumerator ShowCubePlacement()
     {
-        while (cubeToPlace != null)
+        while (cubeIndicator != null)
         {
-            SpawnPosition();
-            yield return new WaitForSeconds(cubeChangePlaceSpeed);
+            ShowPossiblePositions();
+            yield return new WaitForSeconds(CHANGE_PLACE_SPEED);
         }
     }
 
-    private void SpawnPosition()
+    // Відображення можливих позицій розміщення куба-індикатора
+    private void ShowPossiblePositions()
     {
+        // Створюємо список для зберігання можливих позицій
         List<Vector3> positions = new List<Vector3>();
 
-        AddPositionIfEmptyAndDifferent(new Vector3(currentCube.x + 1, currentCube.y, currentCube.z), positions);
-        AddPositionIfEmptyAndDifferent(new Vector3(currentCube.x - 1, currentCube.y, currentCube.z), positions);
-        AddPositionIfEmptyAndDifferent(new Vector3(currentCube.x, currentCube.y + 1, currentCube.z), positions);
-        AddPositionIfEmptyAndDifferent(new Vector3(currentCube.x, currentCube.y - 1, currentCube.z), positions);
-        AddPositionIfEmptyAndDifferent(new Vector3(currentCube.x, currentCube.y, currentCube.z + 1), positions);
-        AddPositionIfEmptyAndDifferent(new Vector3(currentCube.x, currentCube.y, currentCube.z - 1), positions);
+        // Додаємо можливі позиції, якщо вони вільні
+        AddPositionIfEmptyAndDifferent(new Vector3(currentCubePosition.x + 1, currentCubePosition.y, currentCubePosition.z), positions);
+        AddPositionIfEmptyAndDifferent(new Vector3(currentCubePosition.x - 1, currentCubePosition.y, currentCubePosition.z), positions);
+        AddPositionIfEmptyAndDifferent(new Vector3(currentCubePosition.x, currentCubePosition.y + 1, currentCubePosition.z), positions);
+        AddPositionIfEmptyAndDifferent(new Vector3(currentCubePosition.x, currentCubePosition.y - 1, currentCubePosition.z), positions);
+        AddPositionIfEmptyAndDifferent(new Vector3(currentCubePosition.x, currentCubePosition.y, currentCubePosition.z + 1), positions);
+        AddPositionIfEmptyAndDifferent(new Vector3(currentCubePosition.x, currentCubePosition.y, currentCubePosition.z - 1), positions);
 
+        // Перевіряємо, чи є доступні позиції для розміщення
         if (positions.Count > 0)
         {
+            // Вибір випадкової позиції зі списку можливих позицій для розміщення індикатора куба
             int randomIndex = Random.Range(0, positions.Count);
-            cubeToPlace.position = positions[randomIndex];
-        }
-        else
-        {
-            isLose = true;
+
+            // Оновлення позиції індикатора куба в CubeHandler для синхронізації
+            cubeHandler.cubeIndicator.position = positions[randomIndex];
         }
     }
 
+    // Додавання позиції до списку, якщо вона вільна та не є позицією куба-індикатора
     private void AddPositionIfEmptyAndDifferent(Vector3 position, List<Vector3> positions)
     {
-        if (IsPositionEmpty(position) && position != cubeToPlace.position)
+        // Перевіряємо, чи позиція вільна та чи не є це позиція куба-індикатора
+        if (cubeHandler.IsPositionEmpty(position) && position != cubeHandler.cubeIndicator.position)
         {
+            // Додаємо позицію до списку можливих позицій
             positions.Add(position);
         }
-
-    }
-
-    private bool IsPositionEmpty(Vector3 targetPos)
-    {
-        if (targetPos.y == 0)
-        {
-            return false;
-        }
-
-        // Перевіряємо, чи є в списку allCubesPositions елемент, який має ті самі (x, y, z)-координати, що й у targetPos.
-        // Якщо такий елемент існує, метод FindIndex поверне його індекс, в іншому випадку поверне -1.
-        int index = allCubesPositions.FindIndex(pos => pos.x == targetPos.x && pos.y == targetPos.y && pos.z == targetPos.z);
-
-        // Якщо index більше або дорівнює 0, то позиція зайнята, повертаємо false, інакше - true.
-        return index < 0;
     }
 }

@@ -2,26 +2,48 @@ using UnityEngine;
 
 public class ExplodeCubes : MonoBehaviour
 {
-    public GameObject restartButton;
-    private bool _collisionSet;
+    private bool _collisionSet; // Приватна змінна для відстеження зіткнення.
+
+    // Делегат для події "Кінець гри".
+    public delegate void GameOverEvent();
+    public static event GameOverEvent OnGameOver;
+
+    // Метод, який викликається при зіткненні об'єкту з іншим.
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Cube")
+        // Якщо зіткнення вже було оброблено або об'єкт не має тегу "Cube", вийти з методу.
+        if (_collisionSet || !collision.gameObject.CompareTag("Cube"))
+            return;
+
+        _collisionSet = true; // Встановити прапорець, що зіткнення оброблено.
+
+        // Знищити об'єкт, з яким зіткнулися.
+        Destroy(collision.gameObject);
+
+        // Викликати подію "Кінець гри".
+        OnGameOver?.Invoke();
+
+        // Розділити розсипання кубів на окремий метод для кращої читабельності.
+        ExplodeChildren(collision.transform);
+    }
+
+    // Метод для розділення об'єктів на окремі куби та їхнє розсипання.
+    private void ExplodeChildren(Transform parent)
+    {
+        foreach (Transform child in parent)
         {
-            for (int i = collision.transform.childCount - 1; i >= 0; i--)
+            // Перевірити, чи має дочірній об'єкт компонент "Rigidbody".
+            if (!child.TryGetComponent(out Rigidbody childRigidbody))
             {
-                Transform child = collision.transform.GetChild(i);
-                child.gameObject.AddComponent<Rigidbody>();
-                child.gameObject.GetComponent<Rigidbody>().AddExplosionForce(70f, Vector3.up, 5f);
-                child.SetParent(null);
+                // Якщо не має, додати компонент "Rigidbody".
+                childRigidbody = child.gameObject.AddComponent<Rigidbody>();
             }
 
-            restartButton.SetActive(true);
-            
-            Camera.main.gameObject.AddComponent<CameraShake>();            
+            // Додати вибухову силу для кожного дочірнього об'єкту.
+            childRigidbody.AddExplosionForce(70f, Vector3.up, 5f);
 
-            Destroy(collision.gameObject);
-            _collisionSet = true;
+            // Відокремити дочірній об'єкт від батьківського.
+            child.SetParent(null);
         }
     }
 }

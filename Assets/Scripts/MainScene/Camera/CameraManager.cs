@@ -47,4 +47,9 @@ public class CameraManager : MonoBehaviour
             prevCountMaxHorizontal = maxHorizontal;
         }
     }
+
+    public void ShakeCamera()
+    {
+        Camera.main.gameObject.AddComponent<CameraShake>();
+    }
 }
