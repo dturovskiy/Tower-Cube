@@ -39,7 +39,7 @@ public class CanvasButtons : MonoBehaviour
         {
             // GetComponent<AudioSource>().Play();
         }
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("MainScene");
     }
 
     public void LoadInstagram()

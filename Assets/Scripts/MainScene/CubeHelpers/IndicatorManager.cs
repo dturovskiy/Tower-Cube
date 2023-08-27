@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeManager : MonoBehaviour
+public class IndicatorManager : MonoBehaviour
 {
     public Transform cubeIndicator;    // Вказівник на позицію, де буде розміщений куб
     public CubePosition currentCubePosition = new CubePosition(0, 1, 0);    // Поточна позиція куба

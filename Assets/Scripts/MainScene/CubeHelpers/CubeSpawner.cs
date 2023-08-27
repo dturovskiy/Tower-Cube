@@ -4,22 +4,22 @@ using UnityEngine;
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private Transform _allCubesOnScene;
-    [SerializeField] private List<GameObject> _cubesToCreate;
+    [SerializeField] private List<Cube> _cubesToCreate;
     [SerializeField] private List<Rigidbody> _allCubesRigidbodies = new List<Rigidbody>();
     [SerializeField] private CubeHandler _cubeHandler;
-    [SerializeField] private CubeManager _cubeManager;
+    [SerializeField] private IndicatorManager _cubeManager;
     [SerializeField] private UIManager _uiManager;
 
     public int Score { get; private set; } = 0;
 
-    public void InitializeCubeSpawner(List<GameObject> cubesToCreate, CubeManager cubeManager, CubeHandler cubeHandler, UIManager uIManager)
+    public void InitializeCubeSpawner(List<Cube> cubesToCreate, IndicatorManager cubeManager, CubeHandler cubeHandler, UIManager uIManager)
     {
         _cubeManager = cubeManager;
         _cubeHandler = cubeHandler;
         _uiManager = uIManager;
         _allCubesRigidbodies.AddRange(FindObjectsOfType<Rigidbody>());
         _cubesToCreate = cubesToCreate;
-        Debug.Log(_cubesToCreate.Count);
+        Debug.Log("Initialized count of cubes: " + _cubesToCreate.Count);
     }
 
     // Створення нового куба
@@ -30,7 +30,8 @@ public class CubeSpawner : MonoBehaviour
             // Перевіряємо, чи позиція куба індикатора порожня та не зайнята іншим кубом
             if (_cubeHandler.IsPositionEmpty(_cubeHandler.cubeIndicator.position))
             {
-                GameObject newCube = Instantiate(_cubesToCreate[0], _cubeHandler.cubeIndicator.position, Quaternion.identity);   // Створюємо новий куб за обраним префабом і розміщуємо його на позиції куба індикатора
+                GameObject cubePrefab = _cubesToCreate[0].cubePrefab;
+                GameObject newCube = Instantiate(cubePrefab, _cubeHandler.cubeIndicator.position, Quaternion.identity);   // Створюємо новий куб за обраним префабом і розміщуємо його на позиції куба індикатора
                 newCube.transform.SetParent(_allCubesOnScene);   // Встановлюємо батьківський об'єкт для нового куба в контейнері всіх кубів на сцені
                 _cubeManager.currentCubePosition.SetVector(_cubeHandler.cubeIndicator.position);  // Оновлюємо поточну позицію куба на позицію куба індикатора
                 _cubeHandler.possiblePositions.Add(_cubeManager.cubeIndicator.position);   // Видаляємо позицію куба індикатора зі списку можливих позицій для розміщення

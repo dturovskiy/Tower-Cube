@@ -18,13 +18,10 @@ public class ExplodeCubes : MonoBehaviour
         _collisionSet = true; // Встановити прапорець, що зіткнення оброблено.
 
         // Знищити об'єкт, з яким зіткнулися.
-        Destroy(collision.gameObject);
-
+        //Destroy(collision.gameObject);
+        ExplodeChildren(collision.transform);
         // Викликати подію "Кінець гри".
         OnGameOver?.Invoke();
-
-        // Розділити розсипання кубів на окремий метод для кращої читабельності.
-        ExplodeChildren(collision.transform);
     }
 
     // Метод для розділення об'єктів на окремі куби та їхнє розсипання.

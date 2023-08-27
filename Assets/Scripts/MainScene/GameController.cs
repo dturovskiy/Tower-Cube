@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour
 {
     public GameObject[] startPageUI;
 
-    [SerializeField] private CubeManager cubeManager;
+    [SerializeField] private IndicatorManager indicatorManager;
 
     public UIManager uiManager;
 
@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        cubeSpawner.InitializeCubeSpawner(collector.cubesToCreate, cubeManager, cubeHandler, uiManager);
+        cubeSpawner.InitializeCubeSpawner(collector.cubesToCreate, indicatorManager, cubeHandler, uiManager);
         uiManager.InitializeUI(cubeSpawner);
     }
 
@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
         // Підписуємося на подію гри, що викликається, коли куби розсипаються
         ExplodeCubes.OnGameOver += GameOver;
 
-        StartCoroutine(cubeManager.ShowCubePlacement());
+        StartCoroutine(indicatorManager.ShowCubePlacement());
     }
 
     private void Update()
@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour
             uiManager.DestroyUI(startPageUI);
             Debug.Log("Creating new cube...");
             cubeSpawner.CreateNewCube();
-            cameraManager.MoveCamera(cubeHandler.possiblePositions, cubeManager.cubeIndicator.position);
+            cameraManager.MoveCamera(cubeHandler.possiblePositions, indicatorManager.cubeIndicator.position);
         }
     }
 
@@ -62,7 +62,7 @@ public class GameController : MonoBehaviour
     {
         // Викликається, коли куби розсипаються
         isGameOver = true;
-        cubeManager.DestroyCubeToPlace();
+        //indicatorManager.DestroyCubeToPlace();
 
         cameraManager.ShakeCamera();
 
