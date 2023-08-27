@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CubeManager : MonoBehaviour
 {
-    public Transform allCubesOnScene;    // Контейнер для всіх кубів на сцені
     public Transform cubeIndicator;    // Вказівник на позицію, де буде розміщений куб
     public CubePosition currentCubePosition = new CubePosition(0, 1, 0);    // Поточна позиція куба
 

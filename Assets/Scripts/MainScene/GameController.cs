@@ -10,23 +10,21 @@ public class GameController : MonoBehaviour
     [SerializeField] private CubeManager cubeManager;
 
     public UIManager uiManager;
+
     public CameraManager cameraManager;
     public PrefabCollector collector;
     private bool isGameOver;
     public CubeSpawner cubeSpawner;
+    public CubeHandler cubeHandler;
 
     private void Awake()
     {
-        cubeSpawner.InitializeCubeSpawner(collector.cubesToCreate);
+        cubeSpawner.InitializeCubeSpawner(collector.cubesToCreate, cubeManager, cubeHandler, uiManager);
+        uiManager.InitializeUI(cubeSpawner);
     }
 
     private void Start()
     {
-        // Оновлюємо найкращий результат збережений в PlayerPrefs
-        uiManager.UpdateBestScore(PlayerPrefs.GetInt("coins"));
-
-        
-
         // Підписуємося на подію гри, що викликається, коли куби розсипаються
         ExplodeCubes.OnGameOver += GameOver;
 
@@ -35,6 +33,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        uiManager.UpdateBestScore(PlayerPrefs.GetInt("coins"));
         // Перевіряємо, чи натиснута ліва кнопка миші та чи гра не закінчилася і користувач не натиснув на UI
         if (Input.GetMouseButtonDown(0) && !isGameOver && !IsPointerOverUIObject())
         {
@@ -43,6 +42,7 @@ public class GameController : MonoBehaviour
             uiManager.DestroyUI(startPageUI);
             Debug.Log("Creating new cube...");
             cubeSpawner.CreateNewCube();
+            cameraManager.MoveCamera(cubeHandler.possiblePositions, cubeManager.cubeIndicator.position);
         }
     }
 

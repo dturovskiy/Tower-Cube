@@ -30,7 +30,7 @@ public class CanvasButtons : MonoBehaviour
         {
             // GetComponent<AudioSource>().Play();
         }
-        SceneManager.LoadScene("Shop");
+        SceneManager.LoadScene("ShopScene");
     }
 
     public void CloseShop()

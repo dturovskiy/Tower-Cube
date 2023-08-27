@@ -4,6 +4,7 @@ using UnityEngine;
 public class CubeHandler : MonoBehaviour
 {
     public Transform cubeIndicator;
+
     internal List<Vector3> possiblePositions = new List<Vector3>
     {
         new Vector3(0, 0, 0),
