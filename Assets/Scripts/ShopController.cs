@@ -6,31 +6,51 @@ public class ShopController : MonoBehaviour
 {
     public Text cubeNameText;
     public Text cubePriceText;
-
     public CubeListData cubeListData;
-    public Container cubeContainer;
     public GameObject panel;
+    public Transform container;
+    PanelController panelController;
 
     void Awake()
     {
-        PanelController panelController = panel.GetComponent<PanelController>();
+        panelController = panel.GetComponent<PanelController>();
+        List<Cube> cubeWithPrices = AddPrice(cubeListData.cubesToCreate);
 
-        panelController.InitializePanelController(cubeNameText, cubePriceText);
+        foreach (Cube cube in cubeWithPrices)
+        {
+            panel.name = "Panel " + cube.cubeIndex;
+            AddPanel(panel.name, cube);
+        }
+
+        
+
+
     }
 
-    private void Start()
+    public void AddPanel(string name, Cube cube)
     {
 
 
-        List<Cube> cubeWithPrices = cubeListData.cubesToCreate;
+        panel = Instantiate(panel, container.transform);
+        
+        panelController.InitializePanelController(cubeNameText, cubePriceText);
+        panelController.SetCube(cube, cube.cubePrefab);
 
+    }
+
+    public List<Cube> AddPrice(List<Cube> cubeData)
+    {
+        List<Cube> cubeWithPrices = new List<Cube>();
         int price = 0;
-        foreach (Cube cube in cubeWithPrices)
+
+        foreach (Cube cube in cubeData)
         {
             cube.cubePrice = price;
             price += 40;
+
+            cubeWithPrices.Add(cube);
         }
 
-        cubeContainer.AddCubeToPanel(cubeWithPrices);
+        return cubeWithPrices;
     }
 }
