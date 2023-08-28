@@ -8,7 +8,7 @@ public class SelectCube : MonoBehaviour
     public Text titleCube;
     public Text unlockPrice;
     public GameObject selectCube, buyCube;
-    public string nowCube;
+    private string nowCube;
 
     private void Start()
     {

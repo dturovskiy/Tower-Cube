@@ -16,9 +16,11 @@ public class GameController : MonoBehaviour
     private bool isGameOver;
     public CubeSpawner cubeSpawner;
     public CubeHandler cubeHandler;
+    public CubeListData cubeListData;
 
     private void Awake()
     {
+        cubeListData.InitializeCubeList(collector.cubesToCreate);
         cubeSpawner.InitializeCubeSpawner(collector.cubesToCreate, indicatorManager, cubeHandler, uiManager);
         uiManager.InitializeUI(cubeSpawner);
     }

@@ -8,7 +8,6 @@ public class Cube : ScriptableObject
 {
     public string cubeName;
     public int cubeIndex;
+    public int cubePrice;
     public GameObject cubePrefab;
-
-    public string indexedCubeName => $"{cubeName} {cubeIndex}";
 }
